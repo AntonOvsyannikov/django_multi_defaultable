@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import django.apps
 import django.db.migrations
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
@@ -19,10 +20,10 @@ def get_or_create_default(model_name, app_name):
     M = (migration_apps or django.apps.apps).get_model(app_name, model_name)
 
     try:
-        return M.objects.get(isDefault=True).id
+        return M.objects.get(is_default=True).id
 
     except M.DoesNotExist as e:
-        o = M.objects.create(isDefault=True)
+        o = M.objects.create(is_default=True)
         print '{}.{} default object not found, creating default object : OK'.format(model_name, app_name)
         return o
 
@@ -37,9 +38,9 @@ def get_or_create_multi_default(model_name, app_name, label):
         return M.objects.get(label=label).id
 
     except M.DoesNotExist as e:
-        o = M.objects.create(label=label, init=True)
-        print '{}.{} default object with label {} not found, creating default object (not initialized): OK'.format(
-            model_name, app_name, label)
+        print '{}.{} default object with label {} not found, creating dummy ['.format(model_name, app_name, label)
+        o = M.objects.create(label=label, dummy=True)
+        print ']: OK'
         return o
 
 

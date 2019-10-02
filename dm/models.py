@@ -4,9 +4,44 @@ from __future__ import unicode_literals
 from django.db import models
 
 from dm.defaultable.models import MultiDefaultable
-from models_shared import WithFileFields, upload_to, OverwriteStorage
+
+from dm.models_shared import WithFileFields, upload_to
 
 
+def _repr(cls):
+    def __unicode__(self):
+        return "{}({})".format(
+            self.__class__.__name__,
+            ", ".join(["{}={}".format(f.name, getattr(self, f.name)) for f in self.__class__._meta.fields])
+        )
+
+    cls.__unicode__ = __unicode__
+    return cls
+
+
+@_repr
+class ModelY(WithFileFields):
+
+    f = models.FileField(upload_to=upload_to, default='', blank=True)
+    name = models.CharField(max_length=255, default='')
+
+    def upload_to(self, fn):
+        return 'modely/{}/{}'.format(self.id, fn)
+
+
+@_repr
+class ModelX(MultiDefaultable):
+    y = models.ForeignKey(ModelY, null=True, default=None, on_delete=models.CASCADE)
+
+
+@_repr
+class MyModel(models.Model):
+    x1 = models.ForeignKey(ModelX, default=ModelX.default(1), on_delete=models.SET_DEFAULT, related_name='x1')
+    x2 = models.ForeignKey(ModelX, default=ModelX.default(2), on_delete=models.SET_DEFAULT, related_name='x2')
+    x3 = models.ForeignKey(ModelX, default=ModelX.default(3), on_delete=models.SET_DEFAULT, related_name='x3')
+
+
+"""
 class ModelX(MultiDefaultable, WithFileFields):
     name = models.CharField(default='', max_length=255, blank=True)
     value = models.IntegerField(default=0)
@@ -34,3 +69,4 @@ class MyModel(models.Model):
     def __unicode__(self):
         return "M{}:x1={} x2={}".format(self.id, self.x1, self.x2)
 #
+"""

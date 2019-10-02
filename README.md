@@ -100,10 +100,10 @@ def get_or_create_default(model_name, app_name):
     M = (migration_apps or django.apps.apps).get_model(app_name, model_name)
 
     try:
-        return M.objects.get(isDefault=True).id
+        return M.objects.get(is_default=True).id
 
     except M.DoesNotExist as e:
-        o = M.objects.create(isDefault=True)
+        o = M.objects.create(is_default=True)
         print '{}.{} default object not found, creating default object : OK'.format(model_name, app_name)
         return o
 

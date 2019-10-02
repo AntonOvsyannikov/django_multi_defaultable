@@ -6,3 +6,4 @@ from dm.models import *
 
 admin.site.register(MyModel, admin.ModelAdmin)
 admin.site.register(ModelX, admin.ModelAdmin)
+admin.site.register(ModelY, admin.ModelAdmin)

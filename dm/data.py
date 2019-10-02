@@ -15,15 +15,15 @@ def migratedata(apps, schema_editor):
     for m in defaultables:
         try:
             M = apps.get_model('dm', m)
-            if not M.objects.filter(isDefault=True).exists():
-                o = M.objects.create(isDefault=True)
+            if not M.objects.filter(is_default=True).exists():
+                o = M.objects.create(is_default=True)
                 print 'Creating {}:'.format(m), vars(o)
         except LookupError as e:
             print '{} : ignoring'.format(e)
 
     # try:
     #     ModelZ = apps.get_model('dm', 'ModelZ')
-    #     save_to_filefield('CONTENT', ModelZ.objects.get(isDefault=True), 'the_file', 'myfile.txt')
+    #     save_to_filefield('CONTENT', ModelZ.objects.get(is_default=True), 'the_file', 'myfile.txt')
     # except LookupError as e:
     #     print '[{} : ignoring]'.format(e)
 
